@@ -35,11 +35,8 @@ import axios from 'axios';
     Using that array, iterate over it, requesting data for each user, creating a new card for each
     user, and adding that card to the DOM.
 */
-const URL = `https://api.github.com/users/rstott87`
 
 const followersArray = ["tetondan", "dustinmyers", "justsml", "luishrd", "bigknell"]
-
-
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -85,6 +82,7 @@ const cardMaker = (obj) => {
   location.textContent = `${obj.data.location}`
   profile.textContent = "Profile: ";
   linkToUsersPage.href = `${obj.data.html_url}`
+  linkToUsersPage.textContent = `${obj.data.html_url}`
   followers.textContent = `Followers: ${obj.data.followers} `
   following.textContent = `Follwing: ${obj.data.following} `
   bio.textContent = ` Bio: ${obj.data.bio}`
@@ -103,31 +101,22 @@ const cardMaker = (obj) => {
   return card; 
 }
 
-
-
-const cards = document.querySelector('.cards');
-
-function createCards() {
-  axios.get(URL)
+function createCards(ghUsername) {
+  axios.get(`https://api.github.com/users/${ghUsername}`)
     .then(objData => {
+      const cards = document.querySelector('.cards');
       cards.appendChild(cardMaker(objData));
     })
     .catch(err => {
       console.log('error');
     });
 }
-createCards()
 
-followersArray.forEach((ghUsername)=>{
-  const othersURL = `https://api.github.com/users/${ghUsername}`
-  axios.get(othersURL)
-  .then(objData => {
-    cards.appendChild(cardMaker(objData));
-  })
-  .catch(err => {
-    console.log('error');
-  });
- })
+followersArray.forEach((ghUsername)=> {
+  createCards(ghUsername)
+})
+
+createCards("rstott87")
 
 /*
   List of LS Instructors Github username's:
